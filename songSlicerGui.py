@@ -51,8 +51,7 @@ def file_select():
 initialize_ffmpeg_path()
 
 root=tk.Tk()
-root.title("SongSlicer™")
-root.iconbitmap(r"SongSlicerIcon.png")
+root.title("SongSlicer")
 
 mainframe = tk.Frame(root)
 mainframe.grid(column=0, row=0)
@@ -114,7 +113,7 @@ beat_unit_options["highlightthickness"]=0
 
 # Run button
 ROW+=1
-run_button = tk.Button(mainframe, text="Slice ✂🎵", command=run, width=20)
+run_button = tk.Button(mainframe, text="Slice", command=run, width=20)
 run_button.grid(column=1, row=ROW, columnspan=2)
 run_button["bg"]=element_colour
 
