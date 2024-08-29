@@ -2,15 +2,16 @@
 # Pydub requires ffmpeg or libav to be installed.
 # For linux, use 'sudo apt-get install ffmpeg' or similar
 # For windows, download the source code: https://ffmpeg.org/download.html
-# extract the archive, then place the contents in C:\ffmpeg
-# Then add C:\ffmpeg to PATH, e.g. by using the Environment Variables GUI
-# or in powershell: 'setx /M path "%path%;C:\ffmpeg"'
+# extract the archive
+# rename the folder to 'ffmpeg'
+# then place the contents in the same folder as this script
 
 import os
 import subprocess
 from pydub import AudioSegment
 
 # Temporarily add ffmpeg binaries to PATH
+# TODO make the searching more flexible
 def initialize_ffmpeg_path():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     ffmpeg_path = current_dir+'\\ffmpeg\\bin'
