@@ -1,4 +1,5 @@
 # See https://github.com/jiaaro/pydub/tree/master for pydub docs
+# Install with 'pip install pydub'
 # Pydub requires ffmpeg or libav to be installed.
 # For linux, use 'sudo apt-get install ffmpeg' or similar
 # For windows, download the source code: https://ffmpeg.org/download.html
@@ -12,6 +13,7 @@ from pydub import AudioSegment
 
 # Temporarily add ffmpeg binaries to PATH
 # TODO make the searching more flexible
+# TODO only run this section if the os is Windows
 def initialize_ffmpeg_path():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     ffmpeg_path = current_dir+'\\ffmpeg\\bin'
