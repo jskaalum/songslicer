@@ -3,6 +3,7 @@
 # Pydub requires ffmpeg or libav to be installed.
 # For linux, use 'sudo apt-get install ffmpeg' or similar
 # For windows, download the source code: https://ffmpeg.org/download.html
+# e.g. get the exe from https://github.com/GyanD/codexffmpeg/releases/tag/2024-08-28-git-b730defd52
 # extract the archive
 # rename the folder to 'ffmpeg'
 # then place the contents in the same folder as this script
