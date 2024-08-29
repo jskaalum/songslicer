@@ -1,3 +1,6 @@
+# GUI for songslicer
+# Run the program with 'python songSlicerGui.py'
+
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 from songSlicerClasses import *
