@@ -9,8 +9,8 @@
 # then place the contents in the same folder as this script
 
 import os
-import subprocess
 from pydub import AudioSegment
+from pydub import silence
 
 # Temporarily add ffmpeg binaries to PATH
 # TODO make the searching more flexible
@@ -19,7 +19,7 @@ def initialize_ffmpeg_path():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     ffmpeg_path = current_dir+'\\ffmpeg\\bin'
     os.environ['PATH'] += ffmpeg_path
-    print(os.environ['PATH'])
+    #print(os.environ['PATH'])
 
 class beatParameters:
     def __init__(self, amount, units):
@@ -41,6 +41,28 @@ class songFile:
         self.filetype = self.extension.replace('.','')
         self.directory = os.path.dirname(self.filepath)
 
+    def guessBpm(self,filter_freq=160):
+        # TODO is there a faster way to do this?
+        # Taken from https://gist.github.com/jiaaro/faa96fabd252b8552066                
+        seg = AudioSegment.from_file(self.filepath)
+        # reduce loudness of sounds over 120Hz (focus on bass drum, etc)
+        seg = seg.low_pass_filter(filter_freq)
+        # we'll call a beat: anything above average loudness
+        beat_loudness = seg.dBFS 
+        # the fastest tempo we'll allow is 240 bpm (60000ms / 240beats)
+        minimum_silence = int(60000 / 240.0)
+        nonsilent_times = silence.detect_nonsilent(seg, minimum_silence, beat_loudness)
+        spaces_between_beats = []
+        last_t = nonsilent_times[0][0]
+        for peak_start, _ in nonsilent_times[1:]:
+            spaces_between_beats.append(peak_start - last_t)
+            last_t = peak_start
+        # We'll base our guess on the median space between beats
+        spaces_between_beats = sorted(spaces_between_beats)
+        space = spaces_between_beats[int(len(spaces_between_beats) / 2)]
+        bpm = int(60000 / space)
+        return bpm
+    
 class songSlicer:
     def __init__(self, songFile):
         self.songFile = songFile

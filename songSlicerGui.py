@@ -7,8 +7,8 @@ from songSlicerClasses import *
 
 def run(*args):
     if check_input():
-        status.set("Opening {}".format(filename.get()))
-        inputSongFile = songFile(filename.get())
+        status.set("Opening {}".format(filepath_field.get()))
+        inputSongFile = songFile(filepath_field.get())
         inputBeat = beatParameters(beat.get(),beat_units.get())
         slicer = songSlicer(inputSongFile)
         if start_trim.get() > 0:
@@ -20,10 +20,18 @@ def run(*args):
         slicer.export("odd")
         status.set("Done")
 
+def estimate_bpm():
+    if not os.path.isfile(filepath_field.get()):
+        status.set("Error: file \"{}\" not found".format(filepath_field.get()))
+        return
+    inputSongFile = songFile(filepath_field.get())
+    bpm = inputSongFile.guessBpm()
+    status.set("BPM Estimate: {}".format(bpm))
+
 def check_input():
     # Check file exists
-    if not os.path.isfile(filename.get()):
-        status.set("Error: file \"{}\" not found".format(filename.get()))
+    if not os.path.isfile(filepath_field.get()):
+        status.set("Error: file \"{}\" not found".format(filepath_field.get()))
         return False
     
     # Check beat length, front/end trim are non-negative integer
@@ -45,7 +53,11 @@ def file_select():
             ("mp3 files", ".mp3")
         ]
     )
-    filename.set(file_search_return)
+    filepath_field.set(file_search_return)
+    filename = filepath_field.get().split('/')
+    filename = filename[-1]
+    status.set("Found file {}".format(filename))
+
 
 # Add ffmpeg to PATH
 initialize_ffmpeg_path()
@@ -64,10 +76,10 @@ root.rowconfigure(0, weight=1)
 
 # File select
 ROW=1
-filename = tk.StringVar()
-filename.set("Select a file...")
+filepath_field = tk.StringVar()
+filepath_field.set("Select a file...")
 file_entry_span = 4
-file_entry = tk.Entry(mainframe, width=70, textvariable=filename)
+file_entry = tk.Entry(mainframe, width=70, textvariable=filepath_field)
 file_entry.grid(column=1, row=ROW, columnspan=file_entry_span)
 file_select_button = tk.Button(mainframe, text="Open", command=file_select)
 file_select_button.grid(column=file_entry_span+1, row=ROW)
@@ -110,6 +122,9 @@ beat_unit_options["bg"]=element_colour
 beat_unit_options["activebackground"]=element_colour
 beat_unit_options["menu"]["bg"]=element_colour
 beat_unit_options["highlightthickness"]=0
+guess_button = tk.Button(mainframe, text="Estimate BPM (Very slow)", command=estimate_bpm, width=25)
+guess_button.grid(column=4, row=ROW)
+guess_button["bg"]=element_colour
 
 # Run button
 ROW+=1
