@@ -41,7 +41,7 @@ class songFile:
         self.filetype = self.extension.replace('.','')
         self.directory = os.path.dirname(self.filepath)
 
-    def guessBpm(self,filter_freq=160):
+    def guessBpm(self,filter_freq=240):
         # TODO is there a faster way to do this?
         # Taken from https://gist.github.com/jiaaro/faa96fabd252b8552066                
         seg = AudioSegment.from_file(self.filepath)
