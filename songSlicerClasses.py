@@ -9,17 +9,26 @@
 # then place the contents in the same folder as this script
 
 import os
+import platform
 from pydub import AudioSegment
 from pydub import silence
 
 # Temporarily add ffmpeg binaries to PATH
-# TODO make the searching more flexible
-# TODO only run this section if the os is Windows
+# TODO make the searching more flexible so that the folder name and 
+# location don't have to be hardcoded
 def initialize_ffmpeg_path():
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    ffmpeg_path = current_dir+'\\ffmpeg\\bin'
-    os.environ['PATH'] += ffmpeg_path
-    #print(os.environ['PATH'])
+    if platform.system() == 'Windows':
+        # Using os.walk works but is slow because it has to search
+        # the whole filesystem.
+        # search_path = 'C:\\'
+        # search_string = 'ffmpeg.exe'
+        # for root, dirs, files in os.walk(search_path):
+        #     if search_string in files:
+        #         ffmpeg_path = root
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        ffmpeg_path = current_dir+'\\ffmpeg\\bin'
+        os.environ['PATH'] += ffmpeg_path
+        #print(os.environ['PATH'])
 
 class beatParameters:
     def __init__(self, amount, units):
@@ -41,8 +50,9 @@ class songFile:
         self.filetype = self.extension.replace('.','')
         self.directory = os.path.dirname(self.filepath)
 
-    def guessBpm(self,filter_freq=240):
+    def guessBpm(self,filter_freq=120):
         # TODO is there a faster way to do this?
+        # TODO find a more accurate method
         # Taken from https://gist.github.com/jiaaro/faa96fabd252b8552066                
         seg = AudioSegment.from_file(self.filepath)
         # reduce loudness of sounds over 120Hz (focus on bass drum, etc)
